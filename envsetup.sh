@@ -488,8 +488,19 @@ function print_lunch_menu()
     local uname=$(uname)
     echo
     echo "You're building on" $uname
+    if [ "$(uname)" = "Darwin" ] ; then
+       echo "  (ohai, iSheep!!)"
+    else
+       echo "  (ohai, CheekyBastards!!)"
+    fi
     echo
-    echo "Lunch menu... pick a combo:"
+    if [ "z${CUSTOM_DEVICES_ONLY}" != "z" ]; then
+       echo "Breakfast menu... pick a combo:"
+       echo " "
+    else
+       echo "Lunch menu... pick a combo:"
+       echo " "
+    fi
 
     local i=1
     local choice
@@ -499,8 +510,55 @@ function print_lunch_menu()
         i=$(($i+1))
     done | column
 
+    if [ "z${CUSTOM_DEVICES_ONLY}" != "z" ]; then
+       echo " "
+       echo "... dont worry we'll make bacon toghether!!"
+    fi
+
     echo
 }
+
+function brunch()
+{
+    breakfast $*
+    if [ $? -eq 0 ]; then
+        time mka bacon
+    else
+        echo "No such item in brunch menu. Try 'breakfast'"
+        return 1
+    fi
+    return $?
+}
+
+function breakfast()
+{
+    target=$1
+    CUSTOM_DEVICES_ONLY="true"
+    unset LUNCH_MENU_CHOICES
+    for f in `/bin/ls vendor/nexus/vendorsetup.sh 2> /dev/null`
+        do
+            echo "including $f"
+            . $f
+        done
+    unset f
+
+    if [ $# -eq 0 ]; then
+        # No arguments, so let's have the full menu
+        lunch
+    else
+        echo "z$target" | grep -q "-"
+        if [ $? -eq 0 ]; then
+            # A buildtype was specified, assume a full device name
+            lunch $target
+        else
+            # This is probably just the nexus model name
+            lunch nexus_$target-userdebug
+        fi
+    fi
+    return $?
+}
+
+alias bib=breakfast
 
 function lunch()
 {
