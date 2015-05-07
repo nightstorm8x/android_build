@@ -30,8 +30,6 @@ PRODUCT_PACKAGES := \
 	LegacyCamera \
 	librs_jni \
 	LiveWallpapersPicker \
-	Mms \
-	Music \
 	rild \
 	SdkSetup \
 	SmokeTest \
