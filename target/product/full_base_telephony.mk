@@ -20,9 +20,11 @@
 # entirely appropriate to inherit from for on-device configurations.
 
 PRODUCT_PROPERTY_OVERRIDES := \
-    keyguard.no_require_sim=true
+    keyguard.no_require_sim=true \
+    ro.com.android.dataroaming=false
 
 PRODUCT_COPY_FILES := \
+    device/generic/goldfish/data/etc/apns-conf.xml:system/etc/apns-conf.xml \
     frameworks/native/data/etc/handheld_core_hardware.xml:system/etc/permissions/handheld_core_hardware.xml
 
 $(call inherit-product, $(SRC_TARGET_DIR)/product/aosp_base.mk)
